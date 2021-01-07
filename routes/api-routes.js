@@ -44,6 +44,8 @@ module.exports = function (app) {
   });
   app.get("/api/workouts/range", (req, res) => {
     Workout.aggregate([
+      { $sort: { day: -1 } },
+      { $limit: 7 },
       {
         $addFields: {
           totalDuration: {
@@ -53,7 +55,7 @@ module.exports = function (app) {
       },
     ])
       .then((dbWorkout) => {
-        res.json(dbWorkout);
+        res.json(dbWorkout.reverse());
       })
       .catch((err) => {
         res.json(err);
